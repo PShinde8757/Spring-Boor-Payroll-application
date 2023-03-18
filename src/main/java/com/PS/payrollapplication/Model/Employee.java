@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.*;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+
 
 @Getter
 @Setter
@@ -17,10 +17,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 public class Employee {
 
         private @Id @GeneratedValue Long id;
-        private String name;
-        private String role;
-        private String first_name;
-        private String last_name;
+        private String name,role,first_name,last_name;
+
 
         public Employee(String role,String first_name,String last_name){
             this.role=role;
@@ -33,8 +31,8 @@ public class Employee {
     }
 
     public void setName(String name) {
-        String[] firstnameAndLastname =name.split(" ");
-        this.first_name= firstnameAndLastname[0];
-        this.last_name=firstnameAndLastname[1];
+        String[] firstAndLastName= name.split(" ");
+        this.first_name=firstAndLastName[0];
+        this.last_name=firstAndLastName[1];
     }
 }

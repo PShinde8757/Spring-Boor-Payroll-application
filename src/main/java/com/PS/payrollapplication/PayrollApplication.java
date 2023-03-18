@@ -7,10 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @Slf4j
 @SpringBootApplication
 public class PayrollApplication {
-
 	public static void main(String... args) {
-		SpringApplication.run(PayrollApplication.class, args);
-		log.info("Payroll Application Started... ");
+		SpringApplication.run(PayrollApplication.class,args);
+		log.info("PayRollApplication is Started... ");
 	}
 
 }

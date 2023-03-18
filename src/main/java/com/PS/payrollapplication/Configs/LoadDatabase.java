@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
+
+
 @Configuration
 public class LoadDatabase {
 
@@ -20,9 +22,8 @@ public class LoadDatabase {
         return new CommandLineRunner() {
             @Override
             public void run(String... args) throws Exception {
-
-                log.info("Preloading " +repository.save(new Employee("JE","Pratik","Shinde")));
-                log.info("Preloading " +repository.save(new Employee("SE","Mahesh","Keskar")));
+                log.info("Preloading "+repository.save(new Employee("JE","Pratik","Shinde")));
+                log.info("Preloading "+repository.save(new Employee("SE","Sagar","Thapa")));
             }
         };
     }
