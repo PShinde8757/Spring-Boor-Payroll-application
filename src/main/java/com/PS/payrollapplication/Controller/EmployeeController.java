@@ -5,12 +5,9 @@ import com.PS.payrollapplication.CustomException.EmployeeCustomException;
 import com.PS.payrollapplication.Model.Employee;
 import com.PS.payrollapplication.Repository.EmployeeRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.hateoas.EntityModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.swing.text.html.parser.Entity;
 import java.util.List;
-import java.util.Locale;
 
 @Slf4j
 @RestController
@@ -22,23 +19,23 @@ public class EmployeeController {
         this.repository = repository;
     }
 
-    @GetMapping("/employee")
+    @GetMapping("/employee")                            // get all employee
     List<Employee> all(){
         return repository.findAll();
     }
 
-    @GetMapping("/employee/{id}")
+    @GetMapping("/employee/{id}")                                           // get one employee
     Employee one(@PathVariable Long id){
         return repository.findById(id)
                 .orElseThrow(()->new EmployeeCustomException(id));
     }
 
-    @PostMapping("/employee")
+    @PostMapping("/employee")                                               // add employee
     Employee newEmployee(@RequestBody Employee newEmployee){
         return repository.save(newEmployee);
     }
 
-    @PutMapping("/employee/{id}")
+    @PutMapping("/employee/{id}")                                           // edit employee
     Employee replaceEmployee (@RequestBody Employee newEmployee, @PathVariable Long id){
         return repository.findById(id)
                 .map(employee -> {
@@ -52,8 +49,9 @@ public class EmployeeController {
                 });
     }
 
-    @DeleteMapping("/employee/{id}")
-    void deleteEmployee(@PathVariable Long id){
+    @DeleteMapping("/employee/{id}")                                        // delete employee
+    ResponseEntity<?> deleteEmployee(@PathVariable Long id){
         repository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
