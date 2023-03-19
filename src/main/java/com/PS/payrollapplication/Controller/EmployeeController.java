@@ -28,17 +28,17 @@ public class EmployeeController {
     }
 
     @GetMapping("/employee")                                                // get all employee
-    public CollectionModel<EntityModel<Employee>> all(){
-        List<EntityModel<Employee>> employees=(List<EntityModel<Employee>>) repository.findAll()
+    public CollectionModel<EntityModel<Employee>> allEmployee(){
+        List<EntityModel<Employee>> employees= repository.findAll()
                 .stream()
                 .map(employeeModelAssembler::toModel)
                 .toList();
         return CollectionModel.of(employees,
-                linkTo(methodOn(EmployeeController.class).all()).withSelfRel());
+                linkTo(methodOn(EmployeeController.class).allEmployee()).withSelfRel());
     }
 
     @GetMapping("/employee/{id}")                                          // get one employee
-    public EntityModel<Employee> one(@PathVariable(name = "id",required = true) Long id) {
+    public EntityModel<Employee> oneEmployee(@PathVariable Long id) {
 
         Employee employee= repository.findById(id) //
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
