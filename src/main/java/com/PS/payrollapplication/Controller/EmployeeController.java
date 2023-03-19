@@ -8,6 +8,7 @@ import com.PS.payrollapplication.Repository.EmployeeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -46,13 +47,17 @@ public class EmployeeController {
     }
 
     @PostMapping("/employee")                                               // add employee
-    Employee newEmployee(@RequestBody Employee newEmployee){
-        return repository.save(newEmployee);
+    public ResponseEntity<?> newEmployee(@RequestBody Employee newEmployee){
+        EntityModel<Employee> addEmployee=employeeModelAssembler.toModel(repository.save(newEmployee));
+        return ResponseEntity
+                .created(addEmployee.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(addEmployee);
+
     }
 
     @PutMapping("/employee/{id}")                                           // edit employee
-    Employee replaceEmployee (@RequestBody Employee newEmployee, @PathVariable Long id){
-        return repository.findById(id)
+    ResponseEntity<?> replaceEmployee (@RequestBody Employee newEmployee, @PathVariable Long id){
+        Employee updatedEmployee= repository.findById(id)
                 .map(employee -> {
                     employee.setName(newEmployee.getName());
                     employee.setRole(newEmployee.getRole());
@@ -62,6 +67,10 @@ public class EmployeeController {
                     newEmployee.setId(id);
                     return repository.save(newEmployee);
                 });
+        EntityModel<Employee> addEmployee= employeeModelAssembler.toModel(updatedEmployee);
+        return ResponseEntity
+                .created(addEmployee.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(addEmployee);
     }
 
     @DeleteMapping("/employee/{id}")                                        // delete employee
