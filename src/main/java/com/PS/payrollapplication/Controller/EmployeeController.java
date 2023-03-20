@@ -47,7 +47,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/employee")                                               // add employee
-    public ResponseEntity<?> newEmployee(@RequestBody Employee newEmployee){
+    ResponseEntity<?> newEmployee(@RequestBody Employee newEmployee){
         EntityModel<Employee> addEmployee=employeeModelAssembler.toModel(repository.save(newEmployee));
         return ResponseEntity
                 .created(addEmployee.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -57,7 +57,7 @@ public class EmployeeController {
 
     @PutMapping("/employee/{id}")                                           // edit employee
     ResponseEntity<?> replaceEmployee (@RequestBody Employee newEmployee, @PathVariable Long id){
-        Employee updatedEmployee= repository.findById(id)
+        Employee updatedEmployee=repository.findById(id)
                 .map(employee -> {
                     employee.setName(newEmployee.getName());
                     employee.setRole(newEmployee.getRole());
