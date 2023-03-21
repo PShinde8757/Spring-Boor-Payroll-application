@@ -21,20 +21,21 @@ public class LoadDatabase {
     private final static Logger log= LoggerFactory.getLogger(LoadDatabase.class);
 
     @Bean
-    CommandLineRunner intiDatabase(EmployeeRepository repository , OrderRepository orderRepository){
+    CommandLineRunner intiDatabase(EmployeeRepository employeeRepository , OrderRepository orderRepository){
         return new CommandLineRunner() {
             @Override
             public void run(String... args) throws Exception {
-                log.info("Preloading "+repository.save(new Employee("JE","Pratik","Shinde")));
-                log.info("Preloading "+repository.save(new Employee("SE","Sagar","Thapa")));
+                log.info("Preloading "+employeeRepository.save(new Employee("JE","Pratik","Shinde")));
+                log.info("Preloading "+employeeRepository.save(new Employee("SE","Sagar","Thapa")));
+
+                employeeRepository.findAll().forEach(employee -> log.info("Preloaded "+ employee));
 
                 orderRepository.save(new Order("MacBook Pro", Status.COMPLETED));
                 orderRepository.save(new Order("iPhone",Status.IN_PROGRESS));
 
-                orderRepository.findAll().
-                        forEach(order -> log.debug("Preload "+order));
+                orderRepository.findAll().forEach(order -> log.info("Preloaded "+order));
+
             }
         };
     }
-
 }
