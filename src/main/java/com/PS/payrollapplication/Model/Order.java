@@ -3,6 +3,7 @@ package com.PS.payrollapplication.Model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
 
 
@@ -12,6 +13,7 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 @Entity
+@Table(name="CUSTOMER_ORDER")
 public class Order {
     private @GeneratedValue @Id Long id;
     private String description;

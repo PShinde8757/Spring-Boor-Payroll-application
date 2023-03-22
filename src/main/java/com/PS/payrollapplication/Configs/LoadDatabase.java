@@ -28,13 +28,12 @@ public class LoadDatabase {
                 log.info("Preloading "+employeeRepository.save(new Employee("JE","Pratik","Shinde")));
                 log.info("Preloading "+employeeRepository.save(new Employee("SE","Sagar","Thapa")));
 
-                employeeRepository.findAll().forEach(employee -> log.info("Preloaded "+ employee));
+//                employeeRepository.findAll().forEach(employee -> log.info("Preloaded "+ employee));
 
                 orderRepository.save(new Order("MacBook Pro", Status.COMPLETED));
                 orderRepository.save(new Order("iPhone",Status.IN_PROGRESS));
 
-                orderRepository.findAll().forEach(order -> log.info("Preloaded "+order));
-
+                orderRepository.findAll().forEach(order -> log.info("Preloaded " + order));
             }
         };
     }

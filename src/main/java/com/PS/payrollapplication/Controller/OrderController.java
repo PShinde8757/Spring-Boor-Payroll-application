@@ -1,7 +1,6 @@
 package com.PS.payrollapplication.Controller;
 
 import com.PS.payrollapplication.Assemblers.OrderModelAssembler;
-import com.PS.payrollapplication.CustomException.EmployeeNotFoundException;
 import com.PS.payrollapplication.CustomException.OrderNotFoundException;
 import com.PS.payrollapplication.Model.Order;
 import com.PS.payrollapplication.Model.Status;
@@ -16,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -36,15 +36,15 @@ public class OrderController {
         List<EntityModel<Order>> orders= orderRepository.findAll()
                 .stream()
                 .map(orderModelAssembler::toModel)
-                .toList();
+                .collect(Collectors.toList());
         return CollectionModel.of(orders,
-                linkTo(methodOn(OrderController.class)).withSelfRel());
+                linkTo(methodOn(OrderController.class).allOrder()).withSelfRel());
     }
 
     @GetMapping("/order/{id}")
     public EntityModel<Order> oneOrder(@PathVariable long id){
        Order order= orderRepository.findById(id)
-               .orElseThrow(()->new EmployeeNotFoundException(id));
+               .orElseThrow(()->new OrderNotFoundException(id));
 
        return orderModelAssembler.toModel(order);
     }
@@ -55,8 +55,8 @@ public class OrderController {
         Order newOrder = orderRepository.save(order);
 
         return ResponseEntity
-                .created(linkTo(methodOn(OrderController.class).oneOrder(order.getId())).toUri())
-                .body(orderModelAssembler.toModel(order));
+                .created(linkTo(methodOn(OrderController.class).oneOrder(newOrder.getId())).toUri())
+                .body(orderModelAssembler.toModel(newOrder));
     }
 
     @DeleteMapping("/order/{id}/cancel")
@@ -66,9 +66,9 @@ public class OrderController {
 
         if(order.getStatus()==Status.IN_PROGRESS){
             order.setStatus(Status.CANCELLED);
-
-        return  ResponseEntity.ok(orderModelAssembler.toModel(orderRepository.save(order)));
+            return  ResponseEntity.ok(orderModelAssembler.toModel(orderRepository.save(order)));
         }
+
         return ResponseEntity
                 .status(HttpStatus.METHOD_NOT_ALLOWED)
                 .header(HttpHeaders.CONTENT_TYPE, MediaTypes.HTTP_PROBLEM_DETAILS_JSON_VALUE)
@@ -80,17 +80,24 @@ public class OrderController {
     @PutMapping("/order/{id}/complete")
     public ResponseEntity<?>complete(@PathVariable Long id){
         Order order = orderRepository.findById(id)
-                .orElseThrow(()-> new EmployeeNotFoundException(id));
+                .orElseThrow(()-> new OrderNotFoundException(id));
 
         if(order.getStatus()==Status.IN_PROGRESS){
             order.setStatus(Status.COMPLETED);
             return ResponseEntity.ok(orderModelAssembler.toModel(orderRepository.save(order)));
         }
+
         return ResponseEntity
                 .status(HttpStatus.METHOD_NOT_ALLOWED)
                 .header(HttpHeaders.CONTENT_TYPE,MediaTypes.HTTP_PROBLEM_DETAILS_JSON_VALUE)
                 .body(Problem.create()
                         .withTitle("Method Not Allowed")
-                        .withDetail("You Cannot Cancel this order that is in "+order.getStatus()+" Status"));
+                        .withDetail("You Cannot Complete this order that is in "+order.getStatus()+" Status"));
+    }
+
+    @DeleteMapping("/order/{id}")
+    ResponseEntity<?> deleteOrder(@PathVariable Long id){
+        orderRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
