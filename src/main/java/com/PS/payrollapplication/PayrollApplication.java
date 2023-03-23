@@ -14,6 +14,10 @@ public class PayrollApplication {
 	public static void main(String... args) {
 		SpringApplication.run(PayrollApplication.class,args);
 		log.info("PayRollApplication is Started... ");
+
+		System.out.println("This is Cinema THeater App");
+
 	}
+
 
 }
